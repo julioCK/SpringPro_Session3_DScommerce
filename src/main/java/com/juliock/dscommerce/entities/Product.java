@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,7 +37,7 @@ public class Product implements Serializable {
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "product")
-    private Set<OrderItem> orderItems = new HashSet<>();
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product() {
     }
@@ -47,7 +48,7 @@ public class Product implements Serializable {
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
-        this.orderItems = orderItems;
+        this.items = orderItems;
     }
 
     public Long getId() {
@@ -94,7 +95,11 @@ public class Product implements Serializable {
         return new HashSet<>(this.categories);
     }
 
-    public Set<OrderItem> getOrderItems() {
-        return new HashSet<>(this.orderItems);
+    public Set<OrderItem> getItems() {
+        return new HashSet<>(this.items);
+    }
+
+    public List<Order> getOrders() {
+        return items.stream().map(OrderItem::getOrder).toList();
     }
 }
