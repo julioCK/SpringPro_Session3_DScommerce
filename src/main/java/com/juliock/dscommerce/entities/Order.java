@@ -2,11 +2,14 @@ package com.juliock.dscommerce.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_order")
-public class Order {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +17,7 @@ public class Order {
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant moment;
+
     private OrderStatus status;
 
     @ManyToOne
@@ -23,16 +27,19 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Payment payment;
 
-    public Order () {
+    @OneToMany(mappedBy = "order")
+    private Set<OrderItem> orderItems = new HashSet<>();
 
+    public Order () {
     }
 
-    public Order(Long id, Instant moment, OrderStatus status, User client, Payment payment) {
+    public Order(Long id, Instant moment, OrderStatus status, User client, Payment payment, Set<OrderItem> orderItem) {
         this.id = id;
         this.moment = moment;
         this.status = status;
         this.client = client;
         this.payment = payment;
+        this.orderItems = orderItem;
     }
 
     public Long getId() {
@@ -73,5 +80,9 @@ public class Order {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public Set<OrderItem> getOrderItems() {
+        return new HashSet<>(this.orderItems);
     }
 }

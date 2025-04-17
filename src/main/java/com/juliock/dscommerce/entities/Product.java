@@ -2,12 +2,13 @@ package com.juliock.dscommerce.entities;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "tb_product")
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,15 +35,19 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories = new HashSet<>();
 
+    @OneToMany(mappedBy = "product")
+    private Set<OrderItem> orderItems = new HashSet<>();
+
     public Product() {
     }
 
-    public Product(Long id, String name, String description, Double price, String imgUrl) {
+    public Product(Long id, String name, String description, Double price, String imgUrl, Set<OrderItem> orderItems) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
+        this.orderItems = orderItems;
     }
 
     public Long getId() {
@@ -87,5 +92,9 @@ public class Product {
 
     public Set<Category> getCategories() {
         return new HashSet<>(this.categories);
+    }
+
+    public Set<OrderItem> getOrderItems() {
+        return new HashSet<>(this.orderItems);
     }
 }
