@@ -17,7 +17,8 @@ public class Payment implements Serializable {
     private Instant moment;
 
     @OneToOne
-    @MapsId
+    @MapsId //nesse caso o JPA entende que a chave primária da entidade payment será a chave estrangeira (o id de Order, order_id), isso cria uma ligação forte: sem order nao existe payment.
+    @JoinColumn(name = "order_id")
     private Order order;
 
     public Payment() {
