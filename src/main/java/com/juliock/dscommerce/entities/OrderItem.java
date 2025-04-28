@@ -3,6 +3,7 @@ package com.juliock.dscommerce.entities;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /*  O relacionamento da entidade Order com Product é de *muitos para muitos*, ou seja,
  *       várias instâncias de Order podem conter o mesmo Product, e várias instancias de Product
@@ -87,5 +88,18 @@ public class OrderItem implements Serializable {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderItem orderItem = (OrderItem) o;
+        return Objects.equals(getId(), orderItem.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
     }
 }

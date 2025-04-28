@@ -44,12 +44,15 @@ public class OrderItemPK implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
+
         OrderItemPK that = (OrderItemPK) o;
         return Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getProductId(), that.getProductId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrderId(), getProductId());
+        int result = Objects.hashCode(getOrderId());
+        result = 31 * result + Objects.hashCode(getProductId());
+        return result;
     }
 }
