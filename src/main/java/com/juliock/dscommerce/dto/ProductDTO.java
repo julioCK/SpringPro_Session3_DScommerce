@@ -2,10 +2,6 @@ package com.juliock.dscommerce.dto;
 
 
 import com.juliock.dscommerce.entities.Product;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 
 /*
         *   Não é adequado atender às requisições fornecendo objetos contendo TODOS os dados das entidades do banco.
