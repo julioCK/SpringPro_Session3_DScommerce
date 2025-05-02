@@ -5,13 +5,7 @@ import com.juliock.dscommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -28,13 +22,13 @@ public class ProductController {
     * */
     @GetMapping(value = "/{id}")
     public ProductDTO findById(@PathVariable Long id) {
-        return productService.findById(id);
+        return productService.findProductById(id);
     }
 
     /*
     *   O Spring possui a interface "Pageable" que organiza o resultado das consultas ao DB em páginas.
     *   Para que isso aconteça é necessário fornecer um Objeto Pageable como parametro para o metodo que vai realizar a operação no banco de dados.
-    *       (findAll do Controller -> findAll do Service -> findAll do Repository é o metodo que vai buscar os dados)
+    *       (findAll do Controller -> findAllProducts do Service -> findAll do Repository é o metodo que vai buscar os dados)
     *       O retorno dessa operação sera uma coleção do tipo Page<T> que comporta o resultado da busca organizado em paginas.
     *
     *   O Spring lê automaticamente os parâmetros presentes na URL (page, size, sort, etc) se o Pageable for usado no metodo.
@@ -48,6 +42,16 @@ public class ProductController {
 
     @GetMapping(value = "")
     public Page<ProductDTO> findAll(Pageable pageable) {
-        return productService.findAll(pageable);
+        return productService.findAllProducts(pageable);
+    }
+
+    /*
+    *   @RequestBody sinaliza ao Spring Boot para converter o conteúdo do body (nesse caso o JSON contendo um novo registro a ser inserido com POST) para o tipo ProductDTO.
+    *       Para que isso aconteça sem erros, os nomes dos campos do JSON devem corresponder aos nomes dos atributos da classe DTO.
+    * */
+
+    @PostMapping
+    public ProductDTO insert(@RequestBody ProductDTO productDTO) {
+        return productService.insertNewProduct(productDTO);
     }
 }
