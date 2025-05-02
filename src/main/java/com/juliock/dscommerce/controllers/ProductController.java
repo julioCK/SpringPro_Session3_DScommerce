@@ -5,7 +5,11 @@ import com.juliock.dscommerce.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/products")
@@ -21,8 +25,9 @@ public class ProductController {
     /* O @PathVariable diz que o parametro desse metodo será o valor recebido da rota mapeada, value = "/{id}"
     * */
     @GetMapping(value = "/{id}")
-    public ProductDTO findById(@PathVariable Long id) {
-        return productService.findProductById(id);
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+        ProductDTO dto = productService.findProductById(id);
+        return ResponseEntity.ok(dto);
     }
 
     /*
@@ -41,8 +46,9 @@ public class ProductController {
     * */
 
     @GetMapping(value = "")
-    public Page<ProductDTO> findAll(Pageable pageable) {
-        return productService.findAllProducts(pageable);
+    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
+        Page<ProductDTO> page = productService.findAllProducts(pageable);
+        return ResponseEntity.ok(page);
     }
 
     /*
@@ -50,8 +56,33 @@ public class ProductController {
     *       Para que isso aconteça sem erros, os nomes dos campos do JSON devem corresponder aos nomes dos atributos da classe DTO.
     * */
 
+    /*
+    *  Para se ter mais controle sobre a resposta Http enviada ao cliente, usamos a classe ResponseEntity que permite, entre outras coisas, controlar o codigo de status da resposta.
+    *       No caso de uma inclusão bem sucedida de um novo registro, o código de status adequado é o 201.
+    * */
+
+    /*
+    *   Seguindo as boas-praticas de uma API REST, ao inserir um novo registro no BD com metodo POST, é necessário retornar a URI que aponta diretamente para esse novo recurso.
+    *       Ou seja, após a requisição, a resposta deve conter o caminho para o registro que foi inserido.
+    *
+    *   URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
+    *       O codigo acima cria dinamicamente a URI que será retornada após uma inserção bem sucedida.
+    *
+    *           - ServletUriComponentsBuilder.fromCurrentRequest() vai pegar a URL da REQUISIÇÃO atual para construir a base da URI que será retornada (ex http://localhost:8080/usuarios)
+    *           - path("/{id}") estabelece um placeholder onde será adicionado dinamicamente o id do novo registro adicionado
+    *           - buildAndExpand(dto.getId()) substitui o placeholder pelo id do objeto recém-criado, (ex de resultado http://localhost:8080/usuarios/26)
+    *           - toUri() converte o resultado final em um objeto URI
+    *
+    *   Ao usar "ResponseEntity.created(uri).body(dto);" estamos respondendo incluindo um cabeçalho 'Location' com a URI do objeto inserido e com o cod de status 201.
+    * */
+
     @PostMapping
-    public ProductDTO insert(@RequestBody ProductDTO productDTO) {
-        return productService.insertNewProduct(productDTO);
+    public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO productDTO) {
+        ProductDTO dto = productService.insertNewProduct(productDTO);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(dto);
     }
 }
