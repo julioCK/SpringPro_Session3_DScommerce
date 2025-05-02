@@ -39,8 +39,27 @@ public class ProductService {
     *   O metodo save() do JpaRepository retorna a entidade salva no DB. Se o valor do campo iD ja existir no banco, o registro será atualizado, se o iD for null, será criado um novo registro.
     * */
     @Transactional
-    public ProductDTO insertNewProduct(ProductDTO pDTO) {
-        Product p = productRepository.save(new Product(null, pDTO.getName(), pDTO.getDescription(), pDTO.getPrice(), pDTO.getImgUrl()));
-        return new ProductDTO(p);
+    public ProductDTO insertProduct(ProductDTO pDTO) {
+        Product product = new Product();
+        setDTOtoProduct(pDTO, product);
+        product = productRepository.save(product); // O metodo save() do JpaRepository retorna a entidade salva no DB. Se o valor do campo iD ja existir no banco, o registro será atualizado, se o iD for null, será criado um novo registro.
+        return new ProductDTO(product);
     }
+
+    @Transactional
+    public ProductDTO updateProduct(Long id, ProductDTO dto) {
+        Product product = productRepository.getReferenceById(id);
+        setDTOtoProduct(dto, product);
+        product = productRepository.save(product);
+        return new ProductDTO(product);
+    }
+
+    private Product setDTOtoProduct(ProductDTO dto, Product product) {
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setImgUrl(dto.getImgUrl());
+
+        return product;
+    } //cria objetos DTO a partir de objetos Produto.
 }

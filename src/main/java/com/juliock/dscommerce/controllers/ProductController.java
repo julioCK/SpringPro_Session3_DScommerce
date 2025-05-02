@@ -78,11 +78,17 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO productDTO) {
-        ProductDTO dto = productService.insertNewProduct(productDTO);
+        ProductDTO dto = productService.insertProduct(productDTO);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.getId()).toUri();
 
         return ResponseEntity.created(uri).body(dto);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+        dto = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(dto);
     }
 }
