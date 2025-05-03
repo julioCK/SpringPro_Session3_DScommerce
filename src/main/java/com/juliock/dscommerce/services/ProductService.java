@@ -3,6 +3,7 @@ package com.juliock.dscommerce.services;
 import com.juliock.dscommerce.dto.ProductDTO;
 import com.juliock.dscommerce.entities.Product;
 import com.juliock.dscommerce.repositories.ProductRepository;
+import com.juliock.dscommerce.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,9 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findProductById(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
-        Product product = productOptional.get();
+
+        //se o findById() nao encontrar nenhum objeto para atribuir ao Optional, o metodo orElseThrow() vai verificar que o Optional está vazio e lançar a exception
+        Product product = productOptional.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found"));
         return new ProductDTO(product);
     }
 
