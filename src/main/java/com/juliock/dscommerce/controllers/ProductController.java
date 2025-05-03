@@ -91,4 +91,16 @@ public class ProductController {
         dto = productService.updateProduct(id, dto);
         return ResponseEntity.ok(dto);
     }
+
+    /*
+    *   O metodo deleteProductById vai deletar o registro porém nao retornará nada. Dessa forma, no metodo abaixo o ResponseEntity nao vai ter corpo.
+    *       ResponseEntity.noContent(): quando uma resposta foi bem sucedida porém nao tem corpo, o código é 204(No Content). O metodo noContent() providencia essa personalização do cod.
+    *       O metodo build() finalizado a construção do ResponseEntity;
+    * */
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.deleteProductById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
