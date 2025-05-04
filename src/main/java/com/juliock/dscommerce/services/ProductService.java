@@ -26,7 +26,16 @@ public class ProductService {
     public ProductDTO findProductById(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
-        //se o findById() nao encontrar nenhum objeto para atribuir ao Optional, o metodo orElseThrow() vai verificar que o Optional está vazio e lançar a exception
+        /*  se o findById() nao encontrar nenhum objeto para atribuir ao Optional, o metodo orElseThrow() vai verificar que o Optional está vazio e lançar a exception
+                fornecida através da interface funcional Supplier<T>
+            Supplier<T> é uma interface funcional, isso significa que ela possui um unico metodo abstrato
+
+                public interface Supplier<T> {
+                    T get();
+                }
+            Quando uma interface é funcional, é possível usar uma expressão lambida que chama seu unico metodo usando () -> argumento para o metodo abstrato
+         */
+
         Product product = productOptional.orElseThrow(() -> new ResourceNotFoundException("Resource Not Found"));
         return new ProductDTO(product);
     }
@@ -38,11 +47,11 @@ public class ProductService {
         return productDTOPageList;
     }
 
+    @Transactional
+    public ProductDTO insertProduct(ProductDTO pDTO) {
     /*  Inserir um novo produto. O retorno do tipo ProductDTO vai ser util pois depois da persistencia com productRepository devemos retornar um DTO com o ID que foi gerado pelo DB
     *   O metodo save() do JpaRepository retorna a entidade salva no DB. Se o valor do campo iD ja existir no banco, o registro será atualizado, se o iD for null, será criado um novo registro.
     * */
-    @Transactional
-    public ProductDTO insertProduct(ProductDTO pDTO) {
         Product product = new Product();
         setDTOtoProduct(pDTO, product);
         product = productRepository.save(product); // O metodo save() do JpaRepository retorna a entidade salva no DB. Se o valor do campo iD ja existir no banco, o registro será atualizado, se o iD for null, será criado um novo registro.

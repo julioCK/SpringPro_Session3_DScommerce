@@ -26,9 +26,20 @@ public class ProductController {
     * */
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+
+        /*
+        *   Caso o ID do produto não seja encontrado pelo metodo productService.findProductById(), a EXCEPTION 'ResourceNotFoundException' vai ser lançada.
+        *   Pra evitar boilerplate do try/catch, é possivel criar uma classe para tratar exceptions na camada Controller: 'ControllerExceptionHandler'.
+        *       Para organizar melhor, o ideal é criar um pacote 'handlers' para conter essa classe.
+        *
+        * */
+
         ProductDTO dto = productService.findProductById(id);
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping(value = "")
+    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
 
     /*
     *   O Spring possui a interface "Pageable" que organiza o resultado das consultas ao DB em páginas.
@@ -45,12 +56,12 @@ public class ProductController {
 	*		<artifactId>spring-boot-starter-data-jpa</artifactId>
     * */
 
-    @GetMapping(value = "")
-    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
         Page<ProductDTO> page = productService.findAllProducts(pageable);
         return ResponseEntity.ok(page);
     }
 
+    @PostMapping
+    public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO productDTO) {
     /*
     *   @RequestBody sinaliza ao Spring Boot para converter o conteúdo do body (nesse caso o JSON contendo um novo registro a ser inserido com POST) para o tipo ProductDTO.
     *       Para que isso aconteça sem erros, os nomes dos campos do JSON devem corresponder aos nomes dos atributos da classe DTO.
@@ -75,9 +86,6 @@ public class ProductController {
     *
     *   Ao usar "ResponseEntity.created(uri).body(dto);" estamos respondendo incluindo um cabeçalho 'Location' com a URI do objeto inserido e com o cod de status 201.
     * */
-
-    @PostMapping
-    public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO productDTO) {
         ProductDTO dto = productService.insertProduct(productDTO);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -92,14 +100,13 @@ public class ProductController {
         return ResponseEntity.ok(dto);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
     /*
     *   O metodo deleteProductById vai deletar o registro porém nao retornará nada. Dessa forma, no metodo abaixo o ResponseEntity nao vai ter corpo.
     *       ResponseEntity.noContent(): quando uma resposta foi bem sucedida porém nao tem corpo, o código é 204(No Content). O metodo noContent() providencia essa personalização do cod.
     *       O metodo build() finalizado a construção do ResponseEntity;
     * */
-
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProductById(id);
         return ResponseEntity.noContent().build();
     }
