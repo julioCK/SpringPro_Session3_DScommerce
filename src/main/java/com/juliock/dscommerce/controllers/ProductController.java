@@ -2,6 +2,7 @@ package com.juliock.dscommerce.controllers;
 
 import com.juliock.dscommerce.dto.ProductDTO;
 import com.juliock.dscommerce.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +62,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> insert(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO productDTO) {
     /*
     *   @RequestBody sinaliza ao Spring Boot para converter o conteúdo do body (nesse caso o JSON contendo um novo registro a ser inserido com POST) para o tipo ProductDTO.
     *       Para que isso aconteça sem erros, os nomes dos campos do JSON devem corresponder aos nomes dos atributos da classe DTO.
@@ -95,7 +96,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
         dto = productService.updateProduct(id, dto);
         return ResponseEntity.ok(dto);
     }

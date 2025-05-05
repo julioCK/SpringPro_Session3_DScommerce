@@ -95,12 +95,10 @@ public class ProductService {
         }
     }
 
-    private Product setDTOtoProduct(ProductDTO dto, Product product) {
+    private void setDTOtoProduct(ProductDTO dto, Product product) {
         product.setName(dto.getName());
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         product.setImgUrl(dto.getImgUrl());
-
-        return product;
-    } //cria objetos DTO a partir de objetos Produto.
+    } //cria objetos Product a partir de objetos ProductDTO.
 }

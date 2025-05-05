@@ -5,7 +5,6 @@ import com.juliock.dscommerce.dto.CustomError;
 import com.juliock.dscommerce.services.exceptions.DbIntegrityException;
 import com.juliock.dscommerce.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
