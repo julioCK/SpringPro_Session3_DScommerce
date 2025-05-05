@@ -29,9 +29,9 @@ public class ProductController {
 
         /*
         *   Caso o ID do produto não seja encontrado pelo metodo productService.findProductById(), a EXCEPTION 'ResourceNotFoundException' vai ser lançada.
+        *
         *   Pra evitar boilerplate do try/catch, é possivel criar uma classe para tratar exceptions na camada Controller: 'ControllerExceptionHandler'.
         *       Para organizar melhor, o ideal é criar um pacote 'handlers' para conter essa classe.
-        *
         * */
 
         ProductDTO dto = productService.findProductById(id);
