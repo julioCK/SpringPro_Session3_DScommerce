@@ -86,6 +86,9 @@ public class ProductController {
     *           - toUri() converte o resultado final em um objeto URI
     *
     *   Ao usar "ResponseEntity.created(uri).body(dto);" estamos respondendo incluindo um cabeçalho 'Location' com a URI do objeto inserido e com o cod de status 201.
+    *
+    *   A anotation @Valid é da Jakarta Validation API e aciona o gatilho para que uma validação dos dados anotados do objeto DTO sejam validade
+    *       de acordo com constraints parametrizadas em cada campo da classe ProductDTO.
     * */
         ProductDTO dto = productService.insertProduct(productDTO);
 

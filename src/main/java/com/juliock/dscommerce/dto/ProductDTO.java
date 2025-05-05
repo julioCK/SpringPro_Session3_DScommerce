@@ -19,13 +19,15 @@ import java.io.Serializable;
         *
         *   Um DTO diferente será criado para atender a cada tipo de funcionalidade específica.
         *       Essa classe terá todos os campos da entidade Produto pois serve apenas para exemplo.
+        *
+        *   Caso um campo seja criado com um valor que viola sua constraint a exception 'MethodArgumentNotValidException' vai estourar.
          * */
 public class ProductDTO implements Serializable {
 
     private Long id;
 
     @Size(min = 3, max = 80, message = "Name must have between 3 and 80 characters.") //    @Size especifica parametros de tamanho para o nome.
-    @NotBlank(message = "Name must not be empty.") //   @NotBlank não permite que o nome seja nulo, vazio, ou seja composto apenas de espaços em branco.
+    @NotBlank(message = "Name must not be empty.") //   @NotBlank não permite que o nome seja nulo, vazio, ou seja, composto apenas de espaços em branco.
     private String name;
     private String description;
 
