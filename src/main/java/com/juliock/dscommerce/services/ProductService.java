@@ -44,10 +44,27 @@ public class ProductService {
         return new ProductDTO(product);
     }
 
+
+    /*
+    *   A listagem de produtos retornada aqui vai ser organizada por PAGINAS.
+    *       Cada página vai ter um certo numero, uma quantidade x de elementos e uma ordenação para esses elementos.
+    *
+    *   Pageable é um interface que define numero, quantidade de elementos e ordenação de uma pagina.
+    *
+    *   Quando uma request com paramentros é enviada (por exemplo GET '/products?page=0&size=5&sort=nome,asc'), o Spring
+    *       vai capturar esses parametros, instanciar uma implementação da interface Pageable (ex: Pageable pageable = PageRequest.of(numero: 0, elementos: 5))
+    *       e passar essa instância para o metodo do Controller como parâmetro.
+    *       Quando a request vem sem parâmetros, o Spring considera os valores padrão: page=0, size=20, sem ordenação.
+    *
+    *   Chegando no Service, no metodo abaixo, o objeto pageable serve de parametro para o findAll() retornar UMA PAGINA
+    *       contendo Clients. Não são todos os elementos que estão sendo retornados, apenas os que cabem na pagina.
+    *       A cada request, uma página vai ser servida.
+    * */
+
     @Transactional(readOnly = true)
     public Page<ProductDTO> findAllProducts(Pageable pageable) {
-        Page<Product> result = productRepository.findAll(pageable);
-        Page<ProductDTO> productDTOPageList = result.map(x -> new ProductDTO(x));
+        Page<Product> page = productRepository.findAll(pageable);
+        Page<ProductDTO> productDTOPageList = page.map(ProductDTO::new);
         return productDTOPageList;
     }
 
