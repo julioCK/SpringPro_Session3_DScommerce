@@ -14,13 +14,13 @@ import java.io.Serializable;
         *       Para realizar essa projeção dos dados de objetos recuperados do banco de dados é usada um objeto DTO (Data Transfer Object);
         *
         *   As validações dos dados serão feitas nos DTOs. É neles que usaremos as annotations do jakarta.validation-api, como @NotNull, @Size, @Email, etc.
-        *       O motivo disso é por que os DTOs que fazem o tráfego dos dados.
+        *       O motivo disso é que os DTOs que fazem o tráfego dos dados.
         *       O gatilho para acionar a validação dos dados é a annotation @Valid. Ela é usada no momento que se quer realizar a validação.
         *
         *   Um DTO diferente será criado para atender a cada tipo de funcionalidade específica.
-        *       Essa classe terá todos os campos da entidade Produto pois serve apenas para exemplo.
+        *       Essa classe terá todos os campos da entidade Produto, pois serve apenas para exemplo.
         *
-        *   Caso um campo seja criado com um valor que viola sua constraint a exception 'MethodArgumentNotValidException' vai estourar.
+        *   Caso um campo seja criado com um valor que viola sua constraint, a exception 'MethodArgumentNotValidException' vai estourar.
          * */
 public class ProductDTO implements Serializable {
 

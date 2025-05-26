@@ -68,6 +68,12 @@ public class ProductService {
         return productDTOPageList;
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProductDTO> searchProductByName(String name, Pageable pageable) {
+        Page<ProductDTO> productDTOPageList = productRepository.searchByName(name, pageable).map(ProductDTO::new);
+        return productDTOPageList;
+    }
+
     @Transactional
     public ProductDTO insertProduct(ProductDTO pDTO) {
     /*  Inserir um novo produto. O retorno do tipo ProductDTO vai ser util pois depois da persistencia com productRepository devemos retornar um DTO com o ID que foi gerado pelo DB

@@ -23,10 +23,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    /* O @PathVariable diz que o parametro desse metodo será o valor recebido da rota mapeada, value = "/{id}"
-    * */
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
+
+        /* O @PathVariable diz que o parametro desse metodo será o valor recebido da rota mapeada, value = "/{id}"
+         * */
 
         /*
         *   Caso o ID do produto não seja encontrado pelo metodo productService.findProductById(), a EXCEPTION 'ResourceNotFoundException' vai ser lançada.
@@ -39,14 +41,27 @@ public class ProductController {
         return ResponseEntity.ok(dto);
     }
 
+
     @GetMapping(value = "")
-    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<ProductDTO>> findAll(@RequestParam(name = "name", defaultValue = "") String name, Pageable pageable) {
+
+        /*  @RequestParam captura um parametro (especificado pelo atributo name) da URI e atribui à variável a seguir.
+         *        Caso o parametro especificado nao esteja presente, o defaultValue é atribuído à variável.
+         * */
 
     /*
     *   O Spring possui a interface "Pageable" que organiza o resultado das consultas ao DB em páginas.
     *   Para que isso aconteça é necessário fornecer um Objeto Pageable como parametro para o metodo que vai realizar a operação no banco de dados.
     *       (findAll do Controller -> findAllProducts do Service -> findAll do Repository é o metodo que vai buscar os dados)
-    *       O retorno dessa operação sera uma coleção do tipo Page<T> que comporta o resultado da busca organizado em paginas.
+    *       O retorno dessa operação sera uma coleção do tipo Page<T> que comporta o seguinte:
+    *           - a lista de elementos daquela página (somente os elementos da página específica, e não todos os elementos de todas as paginas);
+    *           - Informações sobre a página:
+    *               - Número da página atual;
+    *               - Tamanho;
+    *               - Total de elementos;
+    *               - Total de páginas;
+    *               - Se existe uma próxima página;
+    *               - Se existe uma página anterior;
     *
     *   O Spring lê automaticamente os parâmetros presentes na URL (page, size, sort, etc) se o Pageable for usado no metodo.
     *
@@ -57,8 +72,8 @@ public class ProductController {
 	*		<artifactId>spring-boot-starter-data-jpa</artifactId>
     * */
 
-        Page<ProductDTO> page = productService.findAllProducts(pageable);
-        return ResponseEntity.ok(page);
+        Page<ProductDTO> dtoPage = productService.searchProductByName(name, pageable);
+        return ResponseEntity.ok(dtoPage);
     }
 
     @PostMapping
@@ -75,7 +90,7 @@ public class ProductController {
 
     /*
     *   Seguindo as boas-praticas de uma API REST, ao inserir um novo registro no BD com metodo POST, é necessário retornar a URI que aponta diretamente para esse novo recurso.
-    *       Ou seja, após a requisição, a resposta deve conter o caminho para o registro que foi inserido.
+    *       Ou seja, após a requisição, a resposta deve conter o caminho para o registro inserido.
     *
     *   URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
     *       O codigo acima cria dinamicamente a URI que será retornada após uma inserção bem sucedida.
